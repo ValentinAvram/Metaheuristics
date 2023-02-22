@@ -1,4 +1,6 @@
 import random
+import time
+
 
 def evaluateSolution(data, solution):
     routeLength = 0
@@ -38,29 +40,52 @@ def hillClimbing(data):
         cities.remove(city)
     routeLength = evaluateSolution(data, solution)
 
-    print("Route length: ", routeLength)
+    #print("Route length: ", routeLength)
     ##Get the best neighbor till no better neighbors can be obtained
     neighbor = getBestNeighbor(solution, data)
     while neighbor[1] < routeLength:
         solution = neighbor[0]
         routeLength = neighbor[1]
-        print("Route length: ", routeLength)
+        #print("Route length: ", routeLength)
         neighbor = getBestNeighbor(solution, data)
 
     return solution, routeLength
 
-def main():
-    data = [
-        [0, 400, 500, 300],
-        [400, 0, 300, 500],
-        [500, 300, 0, 400],
-        [300, 500, 400, 0]
-    ]
 
-    s=hillClimbing(data)
-    print("--------------")
-    print("Final solution: ",s[0])
-    print("Final route length: ",s[1])
+
+def main():
+
+    data = []
+
+    #EACH DATASET HAS AN OPTIMAL SOLUTION
+    ##att48_d.txt = 33523 || dantzig42_d.txt = 699 || five_d.txt = 19 || fri26_d.txt = 937 || gr17_d.txt = 2085 || p01_d.txt= 291
+
+    optimalCost = 291 # CHANGE THIS FOR EACH DATASET
+
+    with open("Datasets/p01_d.txt", "r") as f:
+        for line in f:
+            data.append([int(x) for x in line.split()])
+
+    iterations=100
+    optimalSol=0
+
+    for i in range(iterations):
+        start_time = time.time()
+        s=hillClimbing(data)
+        print("--------------")
+        print("Final solution: ",s[0])
+        print("Final route length: ",s[1])
+
+        #Print runtime per iteration
+        print("Runtime: %s seconds" % (time.time() - start_time))
+
+        if(s[1]==optimalCost):
+            print("Optimal solution found")
+            optimalSol = 1
+            break
+        print("--------------\n")
+
+    print("Number of optimal solutions found: ",optimalSol, " / ", i + 1)
 
 if __name__ == "__main__":
     main()
