@@ -2,16 +2,11 @@ import random
 import time
 
 def perturbSolution(solution):
-    l = len(solution)
-    ##Create a random perturbation
-    i = random.randint(0, l - 1)
-    j = random.randint(0, l - 1)
-    while j == i:
-        j = random.randint(0, l - 1)
-    n = solution.copy()
-    n[i] = solution[j]
-    n[j] = solution[i]
-    return n
+    n = len(solution)
+    i = random.randint(0, n - 1)
+    j = random.randint(0, n - 1)
+    solution[i], solution[j] = solution[j], solution[i]
+    return solution
 
 def evaluateSolution(data, solution):
     lengthTravel = 0
@@ -30,19 +25,17 @@ def localSearch(initialSolution, data):
     return solution, routeLength
 
 def getBestNeighborLS(solution, data):
-    l = len(solution)
+    bestLength = evaluateSolution(data, solution)
     bestNeighbor = solution
-    bestNeighborLength = evaluateSolution(data, bestNeighbor)
-    for i in range(l):
-        for j in range(i + 1, l):
-            neighbor = solution.copy()
-            neighbor[i] = solution[j]
-            neighbor[j] = solution[i]
-            neighborLength = evaluateSolution(data, neighbor)
-            if neighborLength < bestNeighborLength:
-                bestNeighbor = neighbor
-                bestNeighborLength = neighborLength
-    return bestNeighbor, bestNeighborLength
+    nIter = 100  # number of local search iterations
+    for i in range(nIter):
+        neighbor = perturbSolution(solution.copy())
+        neighbor = localSearch(neighbor, data)
+        neighborLength = evaluateSolution(data, neighbor)
+        if neighborLength < bestLength:
+            bestLength = neighborLength
+            bestNeighbor = neighbor
+    return bestNeighbor, bestLength
 
 
 def hillClimbingILS(data):
@@ -67,7 +60,6 @@ def hillClimbingILS(data):
 
     return solution, routeLength
 
-
 def main():
 
     data = []
@@ -75,14 +67,13 @@ def main():
     #EACH DATASET HAS AN OPTIMAL SOLUTION
     # five_d.txt = 19 || p01_d.txt= 291 || dantzig42_d.txt = 699 || fri26_d.txt = 937 || gr17_d.txt = 2085 || att48_d.txt = 33523
 
-    optimalCost = 291 # CHANGE THIS
+    optimalCost = 2085  # CHANGE THIS
 
-    #Read the data from a file filled with float numbers
-    with open("Datasets/p01_d.txt", "r") as f:
+    with open("Datasets/gr17_d.txt", "r") as f:
         for line in f:
             data.append([int(x) for x in line.split()])
 
-    iterations=10
+    iterations=1000 #CHANGE THIS
     nOptimalSols=0
 
     for i in range(iterations):

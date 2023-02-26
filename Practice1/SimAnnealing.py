@@ -71,16 +71,16 @@ def main():
     # EACH DATASET HAS AN OPTIMAL SOLUTION
     # five_d.txt = 19 || p01_d.txt= 291 || dantzig42_d.txt = 699 || fri26_d.txt = 937 || gr17_d.txt = 2085 || att48_d.txt = 33523
 
-    optimalCost = 291 # CHANGE THIS FOR EACH DATASET
+    optimalCost = 2085 # CHANGE THIS FOR EACH DATASET
 
     # Read the data from a file filled with float numbers
-    with open("Datasets/p01_d.txt", "r") as f:
+    with open("Datasets/gr17_d.txt", "r") as f:
         for line in f:
             data.append([int(x) for x in line.split()])
 
     t0=10  # CHANGE THIS AS WE WANT
 
-    iterations = 10
+    iterations = 1000
     optimalSol = 0
 
     for i in range(iterations):
